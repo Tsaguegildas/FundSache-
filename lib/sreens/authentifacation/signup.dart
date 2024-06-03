@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fundvgsache/models/user.dart';
+import 'package:fundvgsache/service/database_helper.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl/intl.dart';
 import 'login.dart';
 
 class Signup extends StatefulWidget {
@@ -14,9 +15,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final usrName = TextEditingController();
   final usrVorname = TextEditingController();
-  final land = TextEditingController();
   final email = TextEditingController();
-  final phone = TextEditingController();
   final usrPassword = TextEditingController();
   final confirmPassword = TextEditingController();
   String? geschlecht;
@@ -24,9 +23,17 @@ class _SignupState extends State<Signup> {
   bool isVisible2 = false;
   String? _phoneNumber;
   String? _countryCode;
-  // final _phoneNumber = TextEditingController();
-  // final _countryCode = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  //--------------------- Liste von User-----------------------
+  List<Users> users = [];
+
+  // Méthode de validation pour le sexe
+  String? _validateGender() {
+    if (geschlecht == null) {
+      return "Bitte wählen Sie ein Geschlecht";
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +66,14 @@ class _SignupState extends State<Signup> {
                       controller: usrName,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return " Du muss deinen Name eingeben";
+                          return "Du musst deinen Namen eingeben";
                         }
                         return null;
                       },
                       decoration: const InputDecoration(
                         icon: Icon(Icons.person),
                         border: InputBorder.none,
-                        hintText: " Ihr Name ",
+                        hintText: "Ihr Name",
                       ),
                     ),
                   ),
@@ -81,7 +88,7 @@ class _SignupState extends State<Signup> {
                       controller: usrVorname,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return " Du muss deinen Vorname eingeben";
+                          return "Du musst deinen Vornamen eingeben";
                         }
                         return null;
                       },
@@ -92,28 +99,6 @@ class _SignupState extends State<Signup> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   margin: const EdgeInsets.all(8),
-                  //   padding:
-                  //       const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  //   decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(10),
-                  //       color: Colors.deepPurple.withOpacity(.3)),
-                  //   child: TextFormField(
-                  //     controller: land,
-                  //     validator: (value) {
-                  //       if (value!.isEmpty) {
-                  //         return " Du muss dein Land eingeben";
-                  //       }
-                  //       return null;
-                  //     },
-                  //     decoration: const InputDecoration(
-                  //       icon: Icon(Icons.map),
-                  //       border: InputBorder.none,
-                  //       hintText: "Land",
-                  //     ),
-                  //   ),
-                  // ),
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
@@ -125,7 +110,7 @@ class _SignupState extends State<Signup> {
                       controller: email,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return " Du muss deine Email Adresse eingeben";
+                          return "Du musst deine Email Adresse eingeben";
                         }
                         return null;
                       },
@@ -136,49 +121,26 @@ class _SignupState extends State<Signup> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   margin: const EdgeInsets.all(8),
-                  //   padding:
-                  //       const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  //   decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(10),
-                  //       color: Colors.deepPurple.withOpacity(.3)),
-                  //   child: TextFormField(
-                  //     controller: phone,
-                  //     validator: (value) {
-                  //       if (value!.isEmpty) {
-                  //         return " Du muss deine Telefonnummer eingeben";
-                  //       }
-                  //       return null;
-                  //     },
-                  //     decoration: const InputDecoration(
-                  //       icon: Icon(Icons.phone),
-                  //       border: InputBorder.none,
-                  //       hintText: "Handy",
-                  //     ),
-                  //   ),
-                  // ),
-
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
                     child: IntlPhoneField(
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Phone Number",
+                        hintText: "Phone Numer",
                       ),
-                      initialCountryCode: 'US',
+                      initialCountryCode: 'Togo',
                       onChanged: (phone) {
                         _phoneNumber = phone.completeNumber;
                         _countryCode = phone.countryCode;
                       },
                       validator: (value) {
                         if (value == null) {
-                          return 'Bitte gibt ein gültige Telefone Nummer';
+                          return 'Bitte geben Sie eine gültige Telefonnummer ein';
                         }
                         return null;
                       },
@@ -195,7 +157,7 @@ class _SignupState extends State<Signup> {
                       controller: usrPassword,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return " Du muss dein Password eingeben";
+                          return "Du musst dein Passwort eingeben";
                         }
                         return null;
                       },
@@ -228,9 +190,9 @@ class _SignupState extends State<Signup> {
                       controller: confirmPassword,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return " Du muss dein Password eingeben";
+                          return "Du musst dein Passwort bestätigen";
                         } else if (usrPassword.text != confirmPassword.text) {
-                          return "Password stimmt nicht";
+                          return "Passwörter stimmen nicht überein";
                         }
                         return null;
                       },
@@ -238,7 +200,7 @@ class _SignupState extends State<Signup> {
                       decoration: InputDecoration(
                         icon: const Icon(Icons.lock),
                         border: InputBorder.none,
-                        hintText: " wiederhole dein Password bitte",
+                        hintText: "Wiederhole dein Passwort bitte",
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -256,8 +218,7 @@ class _SignupState extends State<Signup> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.4, // Adjust as needed
+                        width: MediaQuery.of(context).size.width * 0.4,
                         child: ListTile(
                           title: const Text('Herr'),
                           leading: Radio<String>(
@@ -272,8 +233,7 @@ class _SignupState extends State<Signup> {
                         ),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.4, // Adjust as needed
+                        width: MediaQuery.of(context).size.width * 0.4,
                         child: ListTile(
                           title: const Text('Frau'),
                           leading: Radio<String>(
@@ -289,6 +249,14 @@ class _SignupState extends State<Signup> {
                       ),
                     ],
                   ),
+                  if (_validateGender() != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        _validateGender()!,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 7),
                     height: 55,
@@ -297,16 +265,36 @@ class _SignupState extends State<Signup> {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple),
                     child: TextButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
+                      onPressed: () async {
+                        setState(
+                            () {}); // Force re-render to show error message
+                        if (formKey.currentState!.validate() &&
+                            _validateGender() == null) {
+                          var user = Users(
+                              usrName: usrName.text,
+                              usrVorname: usrVorname.text,
+                              usrLand: _countryCode.toString(),
+                              usrEmail: email.text,
+                              usrPhone: _phoneNumber.toString(),
+                              usrPassword: usrPassword.text,
+                              usrGenre: geschlecht.toString());
+
+                          final dbHelper = DatabaseHelper();
+                          var v=await  dbHelper.inserUser(user);
+                          print(v);
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(
                           //         builder: (context) => LoginScreen()));
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Form successfully validated')),
+                          );
                         }
                       },
                       child: const Text(
-                        " Login ",
+                        "Login",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -314,7 +302,7 @@ class _SignupState extends State<Signup> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(" Hast du schon ein Konto ? "),
+                      const Text("Hast du schon ein Konto?"),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -322,7 +310,7 @@ class _SignupState extends State<Signup> {
                               MaterialPageRoute(
                                   builder: (context) => LoginScreen()));
                         },
-                        child: const Text(" Login "),
+                        child: const Text("Login"),
                       ),
                     ],
                   )

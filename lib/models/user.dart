@@ -7,9 +7,8 @@ class Users {
   final String usrPhone;
   final String usrPassword;
   final String usrGenre;
- // final DateTime usrTag;
-  final int ? usrStatus;
-
+  final int  usrStatus=0;
+// final DateTime usrTag;
 
   Users({
     this.usrId,
@@ -21,7 +20,7 @@ class Users {
     required this.usrPassword,
     required this.usrGenre,
     // required this.usrTag,
-    this.usrStatus,
+
   });
 
   factory Users.fromMap(Map<String, dynamic> json) => Users(
@@ -34,7 +33,7 @@ class Users {
     usrPassword: json["usrPassword"],
     usrGenre: json["usrGenre"],
     //usrTag: json["usrTag"],
-    usrStatus: json["usrStatus"],
+
   );
 
   Map<String, dynamic> toMap()=>{

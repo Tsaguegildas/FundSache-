@@ -4,6 +4,7 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:path/path.dart';
+import '';
 
 class AppDatabase {
   static final AppDatabase _singleton = AppDatabase._internal();
