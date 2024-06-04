@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fundvgsache/models/user.dart';
+import 'package:fundvgsache/service/database_helper.dart';
 import 'package:fundvgsache/sreens/authentifacation/signup.dart';
+import 'package:fundvgsache/sreens/home.dart';
+import '../../models/benutzer.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -8,38 +13,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //----- hier brauche ich zwei Kontroller, um den Username und das Password zu verwalten ---////
-  final usrName = TextEditingController();
+  final email = TextEditingController();
   final usrPassword = TextEditingController();
-
-  ///-- Um das Password zu zeigen oder verbergen ----////
   bool isVisible = false;
-  //DatabaseHelper db = DatabaseHelper.instance;
+  bool isLoginTrue = false;
+  final formKey = GlobalKey<FormState>();
 
   login() async {
     WidgetsFlutterBinding.ensureInitialized();
-    //final db = DatabaseHelper.instance;
-    // var response= await db.loginUsr(Users(usrName: usrName.text, usrPassword: usrPassword.text));
-    //  if(response == 1){
-    //    print(" Der User   ${response}");
-    //   // Navigator.push(context, MaterialPageRoute(builder: (context)=>const Home()));
-    //  } else{
-    //    //  setState(() {
-    //    //    isLoginTrue=true;
-    //    //  });
-    //    // Navigator.push(
-    //    //     context,
-    //    //     MaterialPageRoute(
-    //    //         builder: (context) => const Signup()));
-    //    print("Le non  2 est  ${response}");
-    //
-    //  }
   }
-
-  bool isLoginTrue = false;
-
-  /// eine globale key für die  Felder in unserem Projekt---/////
-  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            //--- Hier ist alles in einem Formular geordnet --////
             child: Form(
-              key:
-              formKey, // ----Jetzt kann ich auf alle Variablen greifen----- //
+              key: formKey,
               child: Column(
                 children: [
                   Image.asset(
@@ -59,38 +39,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 200,
                   ),
                   const SizedBox(height: 15),
-
-                  ///////////////////// Hier ist der User Feld.///////////////////
-
                   Container(
                     margin: const EdgeInsets.all(8),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
                     child: TextFormField(
-                      controller: usrName,
+                      controller: email,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return " Du muss ein Username eingeben ";
+                          return " Du muss deine Email Adresse eingeben ";
                         }
                         return null;
                       },
                       decoration: const InputDecoration(
                         icon: Icon(Icons.person),
                         border: InputBorder.none,
-                        hintText: "Username",
+                        hintText: "Email",
                       ),
                     ),
                   ),
-
-                  ////////////////  Hier der PasswortsFeld///////////////
-
                   Container(
                     margin: const EdgeInsets.all(8),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -109,7 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: "Password",
                         suffixIcon: IconButton(
                           onPressed: () {
-                            //////// Hier schaffen ich den Klic, um das Password zu zeigen oder verbergen ////////
                             setState(() {
                               isVisible = !isVisible;
                             });
@@ -121,11 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 10),
-
-                  //------ Jetzt der Login Button----////
-
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 7),
                     height: 55,
@@ -136,15 +103,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          ///--- ------------------- ---//
-                          // final v2 = Users(usrName: "Gildas", usrPassword: "gildas0740");
-
-                         // DatabaseHelper dt= DatabaseHelper.instance;
-                          //int r = await dt.createUser();
-                         // print(" ${r} bishier ist alles Ok");
-
-                          // print(r.toString());
-                          // login();
+                          final dbHelper = DatabaseHelper();
+                          var result = await dbHelper.loginUsr(email.text, usrPassword.text);
+                          if (result) {
+                            var userMap = await dbHelper.getUser(email.text, usrPassword.text);
+                            if (userMap != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyHomePage(user: userMap),
+                                ),
+                              );
+                            }
+                          } else {
+                            print("Der user ist noch nicht in der BD");
+                          }
                         }
                       },
                       child: const Text(
@@ -153,9 +126,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
-                  ///// ----- Sign up Button -----///
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -171,7 +141,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  ////----- Hier zeige ich den Text, wenn usrName und usr usrPasswort nicht stimmt ----////
                   isLoginTrue
                       ? const Text(
                     " UserName oder PassWord stimmt nicht",

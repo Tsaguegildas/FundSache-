@@ -23,18 +23,19 @@ class Users {
 
   });
 
-  factory Users.fromMap(Map<String, dynamic> json) => Users(
-    usrId: json["usrId"],
-    usrName: json["usrName"],
-    usrVorname: json["usrVorname"],
-    usrLand: json["usrLand"],
-    usrEmail: json["usrEmail"],
-    usrPhone: json["usrPhone"],
-    usrPassword: json["usrPassword"],
-    usrGenre: json["usrGenre"],
-    //usrTag: json["usrTag"],
-
-  );
+  factory Users.fromMap(Map<String, dynamic> map) {
+    return Users(
+      usrId: map['usrId'],
+      usrName: map['usrName'],
+      usrVorname: map['usrVorname'],
+      usrLand: map['usrLand'],
+      usrEmail: map['usrEmail'],
+      usrPhone: map['usrPhone'],
+      usrPassword: map['usrPassword'],
+      usrGenre: map['usrGenre'],
+     // usrStatus: map['usrStatus'],
+    );
+  }
 
   Map<String, dynamic> toMap()=>{
     "usrId": usrId,

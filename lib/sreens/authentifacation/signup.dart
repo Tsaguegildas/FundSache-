@@ -280,21 +280,21 @@ class _SignupState extends State<Signup> {
                               usrGenre: geschlecht.toString());
 
                           final dbHelper = DatabaseHelper();
-                          var v=await  dbHelper.inserUser(user);
-                          print(v);
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => LoginScreen()));
+                          await dbHelper.insertUser(user);
 
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('Form successfully validated')),
+                            const SnackBar(
+                                content: Text(
+                                    'Neues Konto erfolgreich hergestellt ')),
                           );
                         }
                       },
                       child: const Text(
-                        "Login",
+                        "SignIn",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
