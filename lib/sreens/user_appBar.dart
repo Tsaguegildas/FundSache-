@@ -36,6 +36,14 @@ class UserAppBar extends StatelessWidget {
         ),
         CircleAvatar(
           backgroundColor: kPrimaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.notifications),
+              onPressed: () {
+                // Action pour le bouton de notification
+              },
+            ),
+
         ),
       ],
     );

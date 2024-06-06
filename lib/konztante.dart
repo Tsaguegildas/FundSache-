@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-const kPrimaryColor= Color(0xFFfdb4be);
+const kPrimaryColor= Colors.deepPurple;
 
 const kBGColor = Color(0xfffafafa);
 

@@ -15,7 +15,7 @@ class Suchbar extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                             color: Colors.black38, blurRadius: 4)
                       ]),
@@ -31,15 +31,16 @@ class Suchbar extends StatelessWidget {
                     ),
                   )),
             ),
-            SizedBox(width: 10,),
+             const SizedBox(width: 10,),
             Container(
               decoration: BoxDecoration(
                 color: kPrimaryColor,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
+                color: Colors.white,
                 onPressed: () {},
-                icon: Icon(Icons.sort_by_alpha),
+                icon:  const Icon(Icons.sort_by_alpha),
               ),
             ),
           ],

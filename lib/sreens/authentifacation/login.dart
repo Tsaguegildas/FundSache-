@@ -3,6 +3,7 @@ import 'package:fundvgsache/models/user.dart';
 import 'package:fundvgsache/service/database_helper.dart';
 import 'package:fundvgsache/sreens/authentifacation/signup.dart';
 import 'package:fundvgsache/sreens/home.dart';
+import 'package:fundvgsache/sreens/homesreens.dart';
 import '../../models/benutzer.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -111,7 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => MyHomePage(user: userMap),
+                                  builder: (context) => Homesreen(),
+                                      //MyHomePage(user: userMap),
                                 ),
                               );
                             }
