@@ -1,32 +1,35 @@
 class LostItems {
   int? itemId;
   String itemName;
+  String? itemMarque;
   String? itemBeschreibung;
   String itemLocationFund;
-  String itemDateFound;
+  String itemDateFund;
   int? finderId; // Verweisst dem User, der das Items gefunden oder verloren hat
   String itemStatus;
-
-  String ? itemBild;
+  String? itemBild;
 
 
   LostItems({
     this.itemId,
     required this.itemName,
+    this.itemMarque,
     this.itemBeschreibung,
     required this.itemLocationFund,
-    required this.itemDateFound,
+    required this.itemDateFund,
     this.finderId,
     required this.itemStatus,
+    required this.itemBild,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'itemId': itemId,
       'itemName': itemName,
+      'itemMarque': itemMarque,
       'itemDescription': itemBeschreibung,
       'itemLocationFound': itemLocationFund,
-      'itemDateFound': itemDateFound,
+      'itemDateFound': itemDateFund,
       'finderId': finderId,
       'itemStatus': itemStatus,
     };
@@ -37,11 +40,12 @@ class LostItems {
     return LostItems(
       itemId: map['itemId'],
       itemName: map['itemName'],
+      itemMarque: map['itemMarque'],
       itemBeschreibung: map['itemDescription'],
       itemLocationFund: map['itemLocationFound'],
-      itemDateFound: map['itemDateFound'],
+      itemDateFund: map['itemDateFound'],
       finderId: map['finderId'],
-      itemStatus: map['itemStatus'],
+      itemStatus: map['itemStatus'], itemBild: '',
     );
   }
 }

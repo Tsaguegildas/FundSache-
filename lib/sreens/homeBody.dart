@@ -7,7 +7,8 @@ import 'package:fundvgsache/sreens/suchBar.dart';
 import 'package:fundvgsache/sreens/user_appBar.dart';
 import 'package:sembast/sembast.dart';
 
-import '../models/categorieCard.dart';
+import '../models/lostItem.dart';
+import '../models/objektCard.dart';
 
 class HomeBody extends StatefulWidget {
   final int selectedIndex;
@@ -32,13 +33,13 @@ class _HomeBodyState extends State<HomeBody> {
               const UserAppBar(),
               const SizedBox(height: 20),
               const Suchbar(),
+              SizedBox(height: 10),
               Expanded(
-                child: SingleChildScrollView(
-                   reverse: false,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                child: CustomScrollView(
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      sliver: SliverToBoxAdapter(
                         child: Row(
                           children: [
                             Text(
@@ -57,38 +58,49 @@ class _HomeBodyState extends State<HomeBody> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.6, // Limitez la hauteur du GridView
-                        child: GridView.builder(
-                          itemCount: categoryList,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 20,
-                          ),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.8,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 24,
-                          ),
-                          itemBuilder: (context, index) {
-                            return CategoryCard();
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      sliver: SliverGrid(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.8,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 24,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                            var itemlos = LostItems(
+                              itemId: 1,
+                              itemName: "Tasche",
+                              itemMarque: "addidas",
+                              itemBeschreibung: "Ein Schlüsselbund mit 3 Schlüsseln und einem Anhänger",
+                              itemLocationFund: "Bahnhof",
+                              itemDateFund: "2024-06-04",
+                              finderId: 101, // ID des Benutzers, der den Gegenstand gefunden hat
+                              itemStatus: "gefunden",
+                              itemBild: "lib/assets/img_6.png",
+                            );
+                            return ObjektCard(itemlos: itemlos);
                           },
+                          childCount: categoryList,
                         ),
                       ),
-                      // Card(
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.all(16.0),
-                      //     child: Column(
-                      //       children: [
-                      //         Text('ausgewälte Index : ${widget.selectedIndex}'),
-                      //         Text('ausgewälte Label: ${widget.selectedLabel}'),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
-                  ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text('ausgewälte Index : ${widget.selectedIndex}'),
+                              Text('ausgewälte Label: ${widget.selectedLabel}'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -163,4 +175,3 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 }
-

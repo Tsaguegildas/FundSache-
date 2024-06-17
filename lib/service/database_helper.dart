@@ -4,6 +4,8 @@ import 'package:path/path.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/lostItem.dart';
+
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
@@ -55,7 +57,6 @@ class DatabaseHelper {
   }
   //---------- Function um User in UserTable hinzuzufügen ---------------------------------------------------//
 
-
   Future<int> insertUser(Users user) async {
     Database db = await database;
     return await db.insert('Users', user.toMap());
@@ -86,18 +87,31 @@ class DatabaseHelper {
       where: 'usrEmail = ? AND usrPassword = ?',
       whereArgs: [email, passWord],
     );
-      return Users.fromMap(result.first);
+    return Users.fromMap(result.first);
   }
 
   // --------------------------------------Ende User -----------------------------------------------------------------//
 
-  Future<int> insertItem(Map<String, dynamic> item) async {
+  // --------------------------------------LostItems -----------------------------------------------------------------//
+  Future<int> insertLostItem(LostItems lostItem) async {
     Database db = await database;
-    return await db.insert('items', item);
+    return await db.insert('LostItems', lostItem.toMap());
   }
 
-  Future<List<Map<String, dynamic>>> getItems() async {
+  Future<List<LostItems>> getAllLostItems() async {
     Database db = await database;
-    return await db.query('items');
+    var result = await db.query('LostItems');
+    return result.map((map) => LostItems.fromMap(map)).toList();
   }
+
+  Future<int> updateLostItem(LostItems lostItem) async {
+    Database db = await database;
+    return await db.update(
+      'LostItems',
+      lostItem.toMap(),
+      where: 'itemId = ?',
+      whereArgs: [lostItem.itemId],
+    );
+  }
+// -------------------------------------- Ende LostItems -----------------------------------------------------------------//
 }
