@@ -7,7 +7,7 @@ class Users {
   final String usrPhone;
   final String usrPassword;
   final String usrGenre;
-  final int  usrStatus=0;
+  final int usrRole=0;
 // final DateTime usrTag;
 
   Users({
@@ -47,6 +47,6 @@ class Users {
     "usrPassword": usrPassword,
     "usrGenre":usrGenre,
     //"usrTag": usrTag,
-    "usrStatus":usrStatus,
+    "usrStatus":usrRole,
   };
 }

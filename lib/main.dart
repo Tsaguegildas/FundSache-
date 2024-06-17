@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fundvgsache/sreens/authentifacation/login.dart';
-import 'package:fundvgsache/sreens/authentifacation/signup.dart';
-import 'package:fundvgsache/sreens/home.dart';
+import 'package:fundvgsache/sreens/authentifikation/login.dart';
+import 'package:fundvgsache/sreens/authentifikation/signup.dart';
 import 'package:fundvgsache/sreens/homesreens.dart';
 
 

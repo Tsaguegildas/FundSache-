@@ -1,17 +1,20 @@
 class LostItems {
   int? itemId;
   String itemName;
-  String? itemDescription;
-  String itemLocationFound;
+  String? itemBeschreibung;
+  String itemLocationFund;
   String itemDateFound;
   int? finderId; // Verweisst dem User, der das Items gefunden oder verloren hat
   String itemStatus;
 
+  String ? itemBild;
+
+
   LostItems({
     this.itemId,
     required this.itemName,
-    this.itemDescription,
-    required this.itemLocationFound,
+    this.itemBeschreibung,
+    required this.itemLocationFund,
     required this.itemDateFound,
     this.finderId,
     required this.itemStatus,
@@ -21,8 +24,8 @@ class LostItems {
     return {
       'itemId': itemId,
       'itemName': itemName,
-      'itemDescription': itemDescription,
-      'itemLocationFound': itemLocationFound,
+      'itemDescription': itemBeschreibung,
+      'itemLocationFound': itemLocationFund,
       'itemDateFound': itemDateFound,
       'finderId': finderId,
       'itemStatus': itemStatus,
@@ -34,8 +37,8 @@ class LostItems {
     return LostItems(
       itemId: map['itemId'],
       itemName: map['itemName'],
-      itemDescription: map['itemDescription'],
-      itemLocationFound: map['itemLocationFound'],
+      itemBeschreibung: map['itemDescription'],
+      itemLocationFund: map['itemLocationFound'],
       itemDateFound: map['itemDateFound'],
       finderId: map['finderId'],
       itemStatus: map['itemStatus'],

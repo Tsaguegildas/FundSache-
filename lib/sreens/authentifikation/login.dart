@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fundvgsache/models/user.dart';
 import 'package:fundvgsache/service/database_helper.dart';
-import 'package:fundvgsache/sreens/authentifacation/signup.dart';
-import 'package:fundvgsache/sreens/home.dart';
+import 'package:fundvgsache/sreens/authentifikation/signup.dart';
+
 import 'package:fundvgsache/sreens/homesreens.dart';
 import '../../models/benutzer.dart';
 
@@ -42,7 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 15),
                   Container(
                     margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -63,7 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Container(
                     margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -105,15 +107,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           final dbHelper = DatabaseHelper();
-                          var result = await dbHelper.loginUsr(email.text, usrPassword.text);
+                          var result = await dbHelper.loginUsr(
+                              email.text, usrPassword.text);
                           if (result) {
-                            var userMap = await dbHelper.getUser(email.text, usrPassword.text);
+                            var userMap = await dbHelper.getUser(
+                                email.text, usrPassword.text);
                             if (userMap != null) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Homesreen(),
-                                      //MyHomePage(user: userMap),
+                                  builder: (context) => Homescreen(),
+                                  //MyHomePage(user: userMap),
                                 ),
                               );
                             }
@@ -145,9 +149,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   isLoginTrue
                       ? const Text(
-                    " UserName oder PassWord stimmt nicht",
-                    style: TextStyle(color: Colors.red),
-                  )
+                          " UserName oder PassWord stimmt nicht",
+                          style: TextStyle(color: Colors.red),
+                        )
                       : const SizedBox(),
                 ],
               ),

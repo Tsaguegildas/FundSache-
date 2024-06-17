@@ -36,9 +36,11 @@ dependencies:
   path_provider_windows: ^2.0.6  # Optional for Windows
   path_provider_macos: ^2.0.6  # Optional for macOS
   path_provider_linux: ^2.1.7  # Optional for Linux
- # sqflite: ^2.0.0+4
+
  # path: ^1.8.0
   sqflite: ^2.0.0+3
+  curved_navigation_bar: ^1.0.5
+  badges: ^3.1.2
 
 
   # The following adds the Cupertino Icons font to your application.

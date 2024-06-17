@@ -1,57 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:fundvgsache/konztante.dart';
 import 'package:fundvgsache/sreens/homeBody.dart';
-class Homesreen extends StatefulWidget {
 
+class Homescreen extends StatefulWidget {
   @override
-  State<Homesreen> createState() => _HomesreenState();
+  State<Homescreen> createState() => _HomescreenState();
 }
 
-class _HomesreenState extends State<Homesreen> {
-  int i=1;
-  int selectIndex = 0;
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Home Page', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    Text('Search Page', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    Text('Profile Page', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    Text('Settings Page', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  ];
+class _HomescreenState extends State<Homescreen> {
+  int selectIndex = 1;
+  final List<String> labels = ['Zurück', 'Home', 'Profile'];
 
   void _onItemTapped(int index) {
     setState(() {
       selectIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     backgroundColor: kBGColor,
-      body: const HomeBody(),
+      backgroundColor: kBGColor,
+      body: HomeBody(
+        selectedIndex: selectIndex,
+        selectedLabel: labels[selectIndex],
+      ),
+
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-        icon: Icon(Icons.keyboard_double_arrow_left),
-    label: 'Zurück',
-    ),
+            icon: Icon(Icons.keyboard_double_arrow_left),
+            label: 'Zurück',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-          ),
 
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-
         ],
         currentIndex: selectIndex,
-        selectedItemColor: Colors.red,
+        selectedItemColor: kPrimaryColor,
         onTap: _onItemTapped,
-
       ),
-
-
     );
   }
 }
