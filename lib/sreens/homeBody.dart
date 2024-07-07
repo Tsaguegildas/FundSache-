@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fundvgsache/konztante.dart';
 import 'package:fundvgsache/sreens/authentifikation/login.dart';
+import 'package:fundvgsache/sreens/itemFormular.dart';
 import 'package:fundvgsache/sreens/suchBar.dart';
 import 'package:fundvgsache/sreens/user_appBar.dart';
 import 'package:sembast/sembast.dart';
@@ -106,6 +107,19 @@ class _HomeBodyState extends State<HomeBody> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kPrimaryColor,
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemFormPage(),
+            ),
+          );
+        },
+        child: Icon(Icons.save, color: Colors.white,),
+        tooltip: 'Enregistrer l\'item',
       ),
       drawer: Drawer(
         child: ListView(

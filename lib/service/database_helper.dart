@@ -5,6 +5,7 @@ import 'package:sembast/sembast_memory.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/lostItem.dart';
+import '../models/nachricht.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -53,6 +54,17 @@ class DatabaseHelper {
         'finderId INTEGER,'
         'itemStatus TEXT NOT NULL,'
         'FOREIGN KEY (finderId) REFERENCES Users (usrId) ON DELETE SET NULL'
+        ')');
+
+    await db.execute('CREATE TABLE Nachrichten ('
+        'nachrichtId INTEGER PRIMARY KEY AUTOINCREMENT,'
+        'text TEXT NOT NULL,'
+        'istVonmir INTEGER NOT NULL,'
+        'userId INTEGER NOT NULL,'
+        'itemId INTEGER NOT NULL,'
+        'dateSend TEXT NOT NULL,'
+        'FOREIGN KEY (userId) REFERENCES Users (usrId) ON DELETE SET NULL,'
+        'FOREIGN KEY (itemId) REFERENCES items (itemId) ON DELETE SET NULL '
         ')');
   }
   //---------- Function um User in UserTable hinzuzufügen ---------------------------------------------------//
@@ -114,4 +126,27 @@ class DatabaseHelper {
     );
   }
 // -------------------------------------- Ende LostItems -----------------------------------------------------------------//
+
+// -------------------------------------- Nachricht -----------------------------------------------------------------//
+
+  Future<int> insertNachricht(Nachricht nachricht) async {
+    Database db = await database;
+    return await db.insert('Nachrichten', nachricht.toMap());
+  }
+
+  Future<List<Nachricht>> getAllNachrichten() async {
+    Database db = await database;
+    var result = await db.query('Nachrichten');
+    return result.map((map) => Nachricht.fromMap(map)).toList();
+  }
+
+
+  Future<int> deleteNachricht(int id) async {
+    Database db = await database;
+    return await db.delete(
+      'Nachrichten',
+      where: 'nachrichtId = ?',
+      whereArgs: [id],
+    );
+  }
 }

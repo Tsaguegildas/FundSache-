@@ -51,20 +51,15 @@ class DetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Text(
-              // 'Finder ID:',
-              // style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              //       ),
               Row(
                 children: [
                   Container(
-
                     child: Column(
                       children: [
                         const Text(
                           'Fundort:',
-                          style:
-                          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -74,8 +69,8 @@ class DetailsPage extends StatelessWidget {
                         const SizedBox(height: 16),
                         const Text(
                           'Gefunden am:',
-                          style:
-                          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -83,10 +78,10 @@ class DetailsPage extends StatelessWidget {
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(height: 16),
-                        const  Text(
+                        const Text(
                           'Status:',
-                          style:
-                          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
 
@@ -101,25 +96,24 @@ class DetailsPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ///////////////////////////////
-
-
+                        ///////////////////////////////
                       ],
                     ),
-
                   ),
-                  Expanded(child: IconButton(
-                    iconSize: 72,
-                    icon: const Icon(Icons.message , color: Colors.black38),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Messagepage(),
-                        ),
-                      );
-                    },
-                  ),),
+                  Expanded(
+                    child: IconButton(
+                      iconSize: 72,
+                      icon: const Icon(Icons.message, color: Colors.black38),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Messagepage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
