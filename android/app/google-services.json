@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "155097376721",
+    "project_id": "fundsache-4f979",
+    "storage_bucket": "fundsache-4f979.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155097376721:android:84e9339ccc9c42c85ee2f0",
+        "android_client_info": {
+          "package_name": "com.example.fundvgsache"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANG3OCCPPyS429nO969VqfQ25ZUHUF0pk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
 }
 
 def localProperties = new Properties()
@@ -28,6 +29,7 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -38,10 +40,15 @@ android {
         applicationId = "com.example.fundvgsache"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+
         minSdk = flutter.minSdkVersion
+        minSdk = 23 // Set this to 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+//        targetSdk = flutter.targetSdkVersion
+//        versionCode = flutterVersionCode.toInteger()
+//        versionName = flutterVersionName
     }
 
     buildTypes {
@@ -55,4 +62,10 @@ android {
 
 flutter {
     source = "../.."
+}
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.1.1')
+    // Fügen Sie die Abhängigkeiten für die Firebase-Produkte hinzu, die Sie verwenden möchten
+    // Zum Beispiel, um Firebase Analytics zu verwenden:
+    // implementation 'com.google.firebase:firebase-analytics'
 }
