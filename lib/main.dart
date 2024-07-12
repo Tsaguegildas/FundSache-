@@ -6,6 +6,7 @@ import 'package:fundvgsache/sreens/authentifikation/signup.dart';
 import 'package:fundvgsache/sreens/homesreens.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fundvgsache/sreens/wrapper.dart';
 import 'package:provider/provider.dart';
 
 import 'model/meinUser.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home:  LoginScreen(),
+        home:  Wrapper(),
       ),
     );
   }

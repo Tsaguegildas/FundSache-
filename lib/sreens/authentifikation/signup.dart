@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fundvgsache/models/user.dart';
+import 'package:fundvgsache/service/authService.dart';
 import 'package:fundvgsache/service/database_helper.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import '../../model/userModel.dart';
 import 'login.dart';
 
 class Signup extends StatefulWidget {
@@ -266,8 +269,7 @@ class _SignupState extends State<Signup> {
                         color: Colors.deepPurple),
                     child: TextButton(
                       onPressed: () async {
-                        setState(
-                            () {}); // Force re-render to show error message
+                        setState(() {}); // Force re-render to show error message
                         if (formKey.currentState!.validate() &&
                             _validateGender() == null) {
                           var user = Users(
@@ -279,9 +281,17 @@ class _SignupState extends State<Signup> {
                               usrPassword: usrPassword.text,
                               usrGenre: geschlecht.toString());
 
+                          var usr = Usermodel(
+                              email: email.text, password: usrPassword.text);
+                          print("voici mon  utilateur");
+                          print(usr.toJson());
+                          //------------------- Verwendung von Firebase für unsere Databank
+                          UserCredential usercredential;
+                          final _auth=AuthService();
+                           _auth.registerWithEmailAnPassword(usr.email, usr.password);
+                          //------------------- Verwendung von SQLite für unsere Databank
                           final dbHelper = DatabaseHelper();
                           await dbHelper.insertUser(user);
-
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -293,6 +303,54 @@ class _SignupState extends State<Signup> {
                           );
                         }
                       },
+                      // onPressed: () async {
+                      //   setState(
+                      //       () {}); // Force re-render to show error message
+                      //   if (formKey.currentState!.validate() &&
+                      //       _validateGender() == null) {
+                      //     var user = Users(
+                      //         usrName: usrName.text,
+                      //         usrVorname: usrVorname.text,
+                      //         usrLand: _countryCode.toString(),
+                      //         usrEmail: email.text,
+                      //         usrPhone: _phoneNumber.toString(),
+                      //         usrPassword: usrPassword.text,
+                      //         usrGenre: geschlecht.toString());
+                      //
+                      //     var usr = Usermodel(
+                      //         email: email.text, password: usrPassword.text);
+                      //
+                      //     print("voici mon utilisateur");
+                      //     print(usr.toJson());
+                      //
+                      //     try {
+                      //       final _auth = AuthService();
+                      //       UserCredential userCredential =
+                      //           await _auth.registerWithEmailAnPassword(
+                      //               usr.email, usr.password);
+                      //
+                      //       // Insertion dans la base de données SQLite
+                      //       final dbHelper = DatabaseHelper();
+                      //       await dbHelper.insertUser(user);
+                      //
+                      //       // Navigation vers l'écran de connexion
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => LoginScreen()));
+                      //       // Affichage d'un message de succès
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //           const SnackBar(
+                      //               content: Text(
+                      //                   'Neues Konto erfolgreich hergestellt')));
+                      //     } catch (e) {
+                      //       // print('Error: $e');
+                      //       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      //       //     content: Text(
+                      //       //         'Erreur lors de la création du compte : $e')));
+                      //     }
+                      //   }
+                      // },
                       child: const Text(
                         "SignIn",
                         style: TextStyle(color: Colors.white),

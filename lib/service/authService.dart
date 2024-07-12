@@ -6,6 +6,10 @@ import '../model/meinUser.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // --------- Um die Benutzererfahrung zu verfolgen--------
+  Stream<MyUser?> get user {
+    return _auth.authStateChanges().map(_userFromFirebaseUser);
+  }
   // Création d'un objet User personnalisé à partir d'un utilisateur Firebase
 
   // einloggen mit einer Email und einem Password
@@ -35,11 +39,11 @@ class AuthService {
   }
 
 //----------------------------------- Funktion  um sich abzumelden
-  Future signOut() async {
-    try{
+  Future<void> signOut() async {
+    try {
       return await _auth.signOut();
-    } catch (e){
-      print (e.toString());
+    } catch (e) {
+      print(e.toString());
       return null;
     }
   }
@@ -50,10 +54,6 @@ class AuthService {
 
 
   /////----------------------------------- -------------------------
-  Stream<MyUser?> get user {
-    return _auth.authStateChanges()
-        .map((User? user) => _userFromFirebaseUser(user));
-  }
 
 
   // Méthode pour se connecter anonymement
