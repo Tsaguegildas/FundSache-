@@ -1,11 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fundvgsache/models/user.dart';
-import 'package:fundvgsache/service/authService.dart';
-import 'package:fundvgsache/service/database_helper.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import '../../model/userModel.dart';
 import 'login.dart';
 
 class Signup extends StatefulWidget {
@@ -25,10 +21,8 @@ class _SignupState extends State<Signup> {
   bool isVisible1 = false;
   bool isVisible2 = false;
   String? _phoneNumber;
-  String? _countryCode;
+  String? _landCode;
   final formKey = GlobalKey<FormState>();
-  //--------------------- Liste von User-----------------------
-  List<Users> users = [];
 
   // Méthode de validation pour le sexe
   String? _validateGender() {
@@ -61,7 +55,7 @@ class _SignupState extends State<Signup> {
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -83,7 +77,7 @@ class _SignupState extends State<Signup> {
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -105,7 +99,7 @@ class _SignupState extends State<Signup> {
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -127,7 +121,7 @@ class _SignupState extends State<Signup> {
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -139,7 +133,7 @@ class _SignupState extends State<Signup> {
                       initialCountryCode: 'Togo',
                       onChanged: (phone) {
                         _phoneNumber = phone.completeNumber;
-                        _countryCode = phone.countryCode;
+                        _landCode = phone.countryCode;
                       },
                       validator: (value) {
                         if (value == null) {
@@ -152,7 +146,7 @@ class _SignupState extends State<Signup> {
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -185,7 +179,7 @@ class _SignupState extends State<Signup> {
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.deepPurple.withOpacity(.3)),
@@ -257,7 +251,7 @@ class _SignupState extends State<Signup> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         _validateGender()!,
-                        style: TextStyle(color: Colors.red),
+                        style: const TextStyle(color: Colors.red),
                       ),
                     ),
                   Container(
@@ -269,88 +263,57 @@ class _SignupState extends State<Signup> {
                         color: Colors.deepPurple),
                     child: TextButton(
                       onPressed: () async {
-                        setState(() {}); // Force re-render to show error message
                         if (formKey.currentState!.validate() &&
                             _validateGender() == null) {
-                          var user = Users(
-                              usrName: usrName.text,
-                              usrVorname: usrVorname.text,
-                              usrLand: _countryCode.toString(),
-                              usrEmail: email.text,
-                              usrPhone: _phoneNumber.toString(),
-                              usrPassword: usrPassword.text,
-                              usrGenre: geschlecht.toString());
+                          try {
+                            UserCredential userCredential =
+                            await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                              email: email.text,
+                              password: usrPassword.text,
+                            );
 
-                          var usr = Usermodel(
-                              email: email.text, password: usrPassword.text);
-                          print("voici mon  utilateur");
-                          print(usr.toJson());
-                          //------------------- Verwendung von Firebase für unsere Databank
-                          UserCredential usercredential;
-                          final _auth=AuthService();
-                           _auth.registerWithEmailAnPassword(usr.email, usr.password);
-                          //------------------- Verwendung von SQLite für unsere Databank
-                          final dbHelper = DatabaseHelper();
-                          await dbHelper.insertUser(user);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'Neues Konto erfolgreich hergestellt ')),
-                          );
+                            String uid = userCredential.user!.uid;
+                            print("Hier ist der Id des User: $uid");
+
+                            // Ajout de l'utilisateur dans Firestore
+                            final CollectionReference collref =
+                            FirebaseFirestore.instance.collection('Users');
+
+                            var user = {
+                              'usrId':uid,
+                              'usrName': usrName.text,
+                              'usrVorname': usrVorname.text,
+                              'usrLand': _landCode.toString(),
+                              'usrEmail': email.text,
+                              'usrPhone': _phoneNumber.toString(),
+                              'usrGenre': geschlecht.toString(),
+                              'usrPassword':usrPassword.text,
+                              'usrRole':0,
+                            };
+
+                            await collref.doc(uid).set(user);
+                            print("Hinzufügung des Users geklappt");
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Neues Konto erfolgreich hergestellt ')),
+                            );
+                          } catch (e) {
+                            print("Fehler bei der Erstellung des Kontos: $e");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      'Fehler bei der Erstellung des Kontos: $e')),
+                            );
+                          }
                         }
                       },
-                      // onPressed: () async {
-                      //   setState(
-                      //       () {}); // Force re-render to show error message
-                      //   if (formKey.currentState!.validate() &&
-                      //       _validateGender() == null) {
-                      //     var user = Users(
-                      //         usrName: usrName.text,
-                      //         usrVorname: usrVorname.text,
-                      //         usrLand: _countryCode.toString(),
-                      //         usrEmail: email.text,
-                      //         usrPhone: _phoneNumber.toString(),
-                      //         usrPassword: usrPassword.text,
-                      //         usrGenre: geschlecht.toString());
-                      //
-                      //     var usr = Usermodel(
-                      //         email: email.text, password: usrPassword.text);
-                      //
-                      //     print("voici mon utilisateur");
-                      //     print(usr.toJson());
-                      //
-                      //     try {
-                      //       final _auth = AuthService();
-                      //       UserCredential userCredential =
-                      //           await _auth.registerWithEmailAnPassword(
-                      //               usr.email, usr.password);
-                      //
-                      //       // Insertion dans la base de données SQLite
-                      //       final dbHelper = DatabaseHelper();
-                      //       await dbHelper.insertUser(user);
-                      //
-                      //       // Navigation vers l'écran de connexion
-                      //       Navigator.push(
-                      //           context,
-                      //           MaterialPageRoute(
-                      //               builder: (context) => LoginScreen()));
-                      //       // Affichage d'un message de succès
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //           const SnackBar(
-                      //               content: Text(
-                      //                   'Neues Konto erfolgreich hergestellt')));
-                      //     } catch (e) {
-                      //       // print('Error: $e');
-                      //       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      //       //     content: Text(
-                      //       //         'Erreur lors de la création du compte : $e')));
-                      //     }
-                      //   }
-                      // },
                       child: const Text(
                         "SignIn",
                         style: TextStyle(color: Colors.white),

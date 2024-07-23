@@ -1,35 +1,39 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fundvgsache/konztante.dart';
 import 'package:fundvgsache/sreens/authentifikation/login.dart';
 import 'package:fundvgsache/sreens/homesreens.dart';
 import 'package:fundvgsache/sreens/itemFormular.dart';
 import 'package:fundvgsache/sreens/suchBar.dart';
+import 'package:fundvgsache/sreens/userProfile.dart';
 import 'package:fundvgsache/sreens/user_appBar.dart';
-import 'package:sembast/sembast.dart';
-
-import '../models/lostItem.dart';
-import '../models/objektCard.dart';
 import '../service/authService.dart';
+import 'details_page.dart';
+import '../models/lostItem.dart'; // Import the model
 
 class HomeBody extends StatefulWidget {
   final int selectedIndex;
   final String selectedLabel;
 
-  HomeBody(
-      {super.key, required this.selectedIndex, required this.selectedLabel});
+  HomeBody({super.key, required this.selectedIndex, required this.selectedLabel});
 
   @override
+
   State<HomeBody> createState() => _HomeBodyState();
 }
 
+
 class _HomeBodyState extends State<HomeBody> {
+  void initState() {
+    super.initState()
+    /////////// ic les e
+    ;
+  }
+  Stream<QuerySnapshot> get lostItems => FirebaseFirestore.instance.collection('LostItem').snapshots();
   final AuthService _auth = AuthService();
-  // final AuthService _auth= AuthService();
+
   @override
   Widget build(BuildContext context) {
-    var categoryList = 12;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -39,76 +43,128 @@ class _HomeBodyState extends State<HomeBody> {
               const UserAppBar(),
               const SizedBox(height: 20),
               const Suchbar(),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Kategorie",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text("Verloren"),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text("Gefunden"),
+                      ),
+                    ],
+                  ),
+                ),
+
               Expanded(
                 child: CustomScrollView(
                   slivers: [
-                    SliverPadding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Row(
-                          children: [
-                            Text(
-                              "Categorie",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text("Verloren"),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text("Gefunfen"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      sliver: SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.8,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 24,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            var itemlos = LostItems(
-                              itemId: 1,
-                              itemName: "Tasche",
-                              itemMarque: "addidas",
-                              itemBeschreibung:
-                                  "Ein Schlüsselbund mit 3 Schlüsseln und einem Anhänger",
-                              itemLocationFund: "Bahnhof",
-                              itemDateFund: "2024-06-04",
-                              finderId:
-                                  101, // ID des Benutzers, der den Gegenstand gefunden hat
-                              itemStatus: "gefunden",
-                              itemBild: "lib/assets/img_6.png",
-                            );
-                            return ObjektCard(itemlos: itemlos);
-                          },
-                          childCount: categoryList,
-                        ),
-                      ),
-                    ),
                     SliverToBoxAdapter(
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                  'ausgewälte Index : ${widget.selectedIndex}'),
-                              Text('ausgewälte Label: ${widget.selectedLabel}'),
-                            ],
-                          ),
-                        ),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: lostItems,
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return const  Center(child: Text("Etwas ist schiefgegangen"));
+                          }
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: Text("Loading"));
+                          }
+                          return GridView.builder(
+                            shrinkWrap: true, // Important to avoid unbounded height error
+                            physics: const NeverScrollableScrollPhysics(), // To avoid scrolling conflict with CustomScrollView
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 4 / 4, // Adjust as needed
+                            ),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot document = snapshot.data!.docs[index];
+                              LostItems data = LostItems.fromFirestore(document);
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailsPage(lostItem: data),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        // color: Color(0xFFF56C42),
+                                        blurRadius: 4.0,
+                                        spreadRadius: 1.05,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      if (data.itemBild.isNotEmpty)
+                                        Image.network(
+                                          data.itemBild,
+                                          height: 100,
+                                          width: 200,
+                                          fit: BoxFit.cover,
+                                        )
+                                      else
+                                        //const SizedBox.shrink(),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        data.itemName,
+                                        style: const TextStyle(fontFamily: ''),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Text(
+                                              data.itemStatus,
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'RobotoMono',
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 15),
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Text(
+                                              data.itemDateFound.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: kPrimaryColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -169,6 +225,7 @@ class _HomeBodyState extends State<HomeBody> {
                 ],
               ),
             ),
+
             Container(
               margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -178,7 +235,20 @@ class _HomeBodyState extends State<HomeBody> {
               ),
               child: ListTile(
                 title: Text("Mein Profil"),
-                onTap: () {},
+                onTap: () async {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        home: DefaultTabController(
+                          length: 4,
+                          child: UserProfile(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Container(
@@ -190,7 +260,21 @@ class _HomeBodyState extends State<HomeBody> {
               ),
               child: ListTile(
                 title: Text("Meine Anzeigen"),
-                onTap: () {},
+                onTap: () async {
+                  await _auth.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        home: DefaultTabController(
+                          length: 4,
+                          child: LoginScreen(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Container(
@@ -202,7 +286,21 @@ class _HomeBodyState extends State<HomeBody> {
               ),
               child: ListTile(
                 title: Text("Nachrichten"),
-                onTap: () {},
+                onTap: () async {
+                  await _auth.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        home: DefaultTabController(
+                          length: 4,
+                          child: LoginScreen(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Container(
@@ -214,9 +312,24 @@ class _HomeBodyState extends State<HomeBody> {
               ),
               child: ListTile(
                 title: Text("Hilfe"),
-                onTap: () {},
+                onTap: () async {
+                  await _auth.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        home: DefaultTabController(
+                          length: 4,
+                          child: LoginScreen(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
+
             Container(
               margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -225,35 +338,23 @@ class _HomeBodyState extends State<HomeBody> {
                 color: Colors.deepPurple.withOpacity(.3),
               ),
               child: ListTile(
-                  title: Text("Abmelden"),
-
-                  onTap: () async {
-
-                    await _auth.signOut();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const MaterialApp(
-                          debugShowCheckedModeBanner: false,
-                          home: DefaultTabController(
-                            length: 4,
-                            child: LoginScreen(),
-                          ),
+                title: Text("Abmelden"),
+                onTap: () async {
+                  await _auth.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        home: DefaultTabController(
+                          length: 4,
+                          child: LoginScreen(),
                         ),
                       ),
-                    );
-                  }
-                  // async{
-                  //
-                  //   await _auth.signOut();
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => ItemFormPage(),
-                  //     ),
-                  //   );
-                  // },
-                  ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -261,8 +362,7 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 
-  Widget _createDrawerItem(BuildContext context, String title,
-      [VoidCallback? onTap]) {
+  Widget _createDrawerItem(BuildContext context, String title, [VoidCallback? onTap]) {
     return Container(
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

@@ -116,15 +116,15 @@ class DatabaseHelper {
     return result.map((map) => LostItems.fromMap(map)).toList();
   }
 
-  Future<int> updateLostItem(LostItems lostItem) async {
-    Database db = await database;
-    return await db.update(
-      'LostItems',
-      lostItem.toMap(),
-      where: 'itemId = ?',
-      whereArgs: [lostItem.itemId],
-    );
-  }
+  // Future<int> updateLostItem(LostItems lostItem) async {
+  //   Database db = await database;
+  //   return await db.update(
+  //     'LostItems',
+  //     lostItem.toMap(),
+  //     where: 'itemId = ?',
+  //     whereArgs: [lostItem.itemId],
+  //   );
+  // }
 // -------------------------------------- Ende LostItems -----------------------------------------------------------------//
 
 // -------------------------------------- Nachricht -----------------------------------------------------------------//

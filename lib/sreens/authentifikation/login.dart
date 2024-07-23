@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fundvgsache/models/user.dart';
 import 'package:fundvgsache/service/database_helper.dart';
@@ -153,27 +154,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: const Text("Sign Up"),
                       ),
-                      IconButton(
-                        onPressed: () async{
-                          ImagePicker imagePicker = ImagePicker();
-                          XFile? file= await imagePicker.pickImage(source: ImageSource.camera);
-                          print('${file?.path}');
-                          if(file==null)return;
-
-                          String uniqueFileName= DateTime.now().millisecondsSinceEpoch.toString();
-
-                          Reference referenceRoot= FirebaseStorage.instance.ref();
-                          Reference referenceDirImages=referenceRoot.child('images');
-
-                          Reference referenceImageToUpload=referenceDirImages.child('${uniqueFileName}');
-                          try{
-                            await referenceImageToUpload.putBlob(File(file!.path));
-                            imageUrl= await referenceImageToUpload.getDownloadURL();
-                          }catch(error){}
-
-                        },
-                        icon: Icon(Icons.camera_alt),
-                      ),
+                      // IconButton(
+                      //   onPressed: () async{
+                      //     ImagePicker imagePicker = ImagePicker();
+                      //     XFile? file= await imagePicker.pickImage(source: ImageSource.camera);
+                      //     print('${file?.path}');
+                      //     if(file==null)return;
+                      //
+                      //     String uniqueFileName= DateTime.now().millisecondsSinceEpoch.toString();
+                      //
+                      //     Reference referenceRoot= FirebaseStorage.instance.ref();
+                      //     Reference referenceDirImages=referenceRoot.child('images');
+                      //
+                      //     Reference referenceImageToUpload=referenceDirImages.child('${uniqueFileName}');
+                      //     try{
+                      //       await referenceImageToUpload.putBlob(File(file!.path));
+                      //       imageUrl= await referenceImageToUpload.getDownloadURL();
+                      //     }catch(error){}
+                      //
+                      //   },
+                      //   icon: Icon(Icons.camera_alt),
+                      // ),
                     ],
                   ),
                   isLoginTrue
