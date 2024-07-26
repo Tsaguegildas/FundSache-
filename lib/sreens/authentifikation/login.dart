@@ -30,9 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
               key: formKey,
               child: Column(
                 children: [
-                  Image.asset(
-                    "lib/assets/img.png",
-                    width: 200,
+                  const CircleAvatar(
+                    radius: 100,
+                    backgroundImage: NetworkImage("https://smartasset.my/wp-content/uploads/3-Login-Page-Screen.png"),
                   ),
                   const SizedBox(height: 15),
                   Container(

@@ -246,7 +246,6 @@ class _HomeBodyState extends State<HomeBody> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: const [
             BoxShadow(
-              blurRadius: 4.0,
               spreadRadius: 1.05,
             ),
           ],
