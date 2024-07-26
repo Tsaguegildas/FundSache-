@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fundvgsache/sreens/editUserProfile.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -44,24 +45,24 @@ class _UserProfileState extends State<UserProfile> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildProfileHeader(),
-            const SizedBox(height: 20),
-            _buildProfileInfo(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileHeader() {
-    return Column(
-      children: [
+        Column(
+        children: [
         CircleAvatar(
-          radius: 50,
+        radius: 50,
           backgroundImage: userData!['itemBild'] != null
               ? NetworkImage(userData!['itemBild'])
               : const AssetImage('assets/default_profile.png') as ImageProvider,
+          child: IconButton(
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const EditUserProfile()),
+              );
+            },
+            icon: Icon(Icons.edit),
+          ),
         ),
+
         const SizedBox(height: 10),
         Text(
           "${userData!['usrName'] ?? ''} ${userData!['usrVorname'] ?? ''}",
@@ -77,23 +78,27 @@ class _UserProfileState extends State<UserProfile> {
             color: Colors.grey,
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildProfileInfo() {
-    return Expanded(
-      child: ListView(
-        children: [
-          _buildProfileItem('Name', userData!['usrName'] ?? ''),
-          _buildProfileItem('Vorname', userData!['usrVorname'] ?? ''),
-          _buildProfileItem('Geschlecht', userData!['usrGenre'] ?? ''),
-          _buildProfileItem('Telefonnummer', userData!['usrPhone'] ?? ''),
-          _buildProfileItem('Land', userData!['usrLand'] ?? ''),
-          const Divider(),
-
-          _buildItemDetails('Status', userData!['itemStatus'] ?? '', Icons.check),
         ],
+      ),
+            const SizedBox(height: 20),
+      Expanded(
+        child: ListView(
+          children: [
+            _buildProfileItem('Name', userData!['usrName'] ?? ''),
+            _buildProfileItem('Vorname', userData!['usrVorname'] ?? ''),
+            _buildProfileItem('Geschlecht', userData!['usrGenre'] ?? ''),
+            _buildProfileItem('Telefonnummer', userData!['usrPhone'] ?? ''),
+            const Divider(),
+           Container(
+             child:  Row(
+               children: [Text("Mein Koton löschen"), ],
+             ),
+           )
+          ],
+        ),
+      ),
+          ],
+        ),
       ),
     );
   }
@@ -108,14 +113,4 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget _buildItemDetails(String title, String value, IconData icon) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.deepPurple),
-        title: Text(title),
-        subtitle: Text(value),
-      ),
-    );
-  }
 }

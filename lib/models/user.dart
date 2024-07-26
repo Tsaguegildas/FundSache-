@@ -7,7 +7,8 @@ class Users {
   final String usrPhone;
   final String usrPassword;
   final String usrGenre;
-  final int usrRole=0;
+  final String usrRole;
+  final String? bildProfile;
 // final DateTime usrTag;
 
   Users({
@@ -19,6 +20,9 @@ class Users {
     required this.usrPhone,
     required this.usrPassword,
     required this.usrGenre,
+    required this.bildProfile,
+    required this.usrRole,
+
     // required this.usrTag,
 
   });
@@ -33,6 +37,8 @@ class Users {
       usrPhone: map['usrPhone'],
       usrPassword: map['usrPassword'],
       usrGenre: map['usrGenre'],
+      bildProfile: map['bildProfile'],
+        usrRole:map['usrRole']
      // usrStatus: map['usrStatus'],
     );
   }
@@ -47,6 +53,7 @@ class Users {
     "usrPassword": usrPassword,
     "usrGenre":usrGenre,
     //"usrTag": usrTag,
-    "usrStatus":usrRole,
+    "usrRole":usrRole,
+    "bildProfile":bildProfile,
   };
 }

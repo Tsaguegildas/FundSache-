@@ -29,13 +29,12 @@ class _ItemFormPageState extends State<ItemFormPage> {
   final TextEditingController _finderIdController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
 
-  //------------------------- den Controller freimachen
   @override
   void dispose() {
     _dateController.dispose();
     super.dispose();
   }
-// -------------------------------------------------------------für das Datum
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -46,58 +45,47 @@ class _ItemFormPageState extends State<ItemFormPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dateController.text = "${picked.toLocal()}".split(' ')[0]; // Format YYYY-MM-DD
+        _dateController.text = "${picked.toLocal()}".split(' ')[0];
       });
     }
   }
-  //------------------------------------- end Datum
 
-  // Methode zum Einreichen des Formulars
   Future<void> _submitForm() async {
-    // hier habe ich die Infos über die aktuelle angemeldete Benutzer
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      // Falls kein Benutzer angemeldet ist
-      print("Niemand ist verbunden ");
+      print("Niemand ist verbunden");
       return;
     }
-    // Validierung des Formulars
     if (_formKey.currentState!.validate()) {
-      // Erstellung eines neuen LostItems
       LostItems newItem = LostItems(
         itemName: _nameController.text,
         itemMarque: _marqueController.text,
         itemBeschreibung: _beschreibungController.text,
         itemLocationFund: _locationController.text,
         itemDateFound: _dateController.text,
-        finderId: user.uid, // Verwendung von user.uid zur Abrufung der Benutzer-ID
-        itemStatus: "gefunden",
-        itemBild: itemImage, // URL des hochgeladenen Bildes
+        finderId: user.uid,
+        itemKategorie: "gefunden",
+        itemBild: itemImage,
         creatAm: DateTime.now(),
       );
 
-      // Verweis auf die LostItem-Sammlung in Firestore
       final CollectionReference collref =
-      FirebaseFirestore.instance.collection('LostItem');
+          FirebaseFirestore.instance.collection('LostItem');
 
       try {
-        // Hinzufügen des neuen Items zur Sammlung
         await collref.add(newItem.toMap());
         print("Hinzufügung des Items geklappt");
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Homescreen()));
+            context, MaterialPageRoute(builder: (context) => Homescreen()));
       } catch (e) {
-        print("Fehler bei der Hinzufügung des Items : $e");
+        print("Fehler bei der Hinzufügung des Items: $e");
       }
     }
   }
 
-  // Methode zum Auswählen eines Bildes
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(ImageSource source) async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.camera);
+    XFile? file = await imagePicker.pickImage(source: source);
 
     if (file != null) {
       setState(() {
@@ -106,11 +94,11 @@ class _ItemFormPageState extends State<ItemFormPage> {
 
       try {
         String uniqueFileName =
-        DateTime.now().millisecondsSinceEpoch.toString();
+            DateTime.now().millisecondsSinceEpoch.toString();
         Reference referenceRoot = FirebaseStorage.instance.ref();
         Reference referenceDirImages = referenceRoot.child('images');
         Reference referenceImageToUpload =
-        referenceDirImages.child(uniqueFileName);
+            referenceDirImages.child(uniqueFileName);
 
         await referenceImageToUpload.putFile(File(file.path));
         String downloadURL = await referenceImageToUpload.getDownloadURL();
@@ -118,11 +106,41 @@ class _ItemFormPageState extends State<ItemFormPage> {
         setState(() {
           itemImage = downloadURL;
         });
-        print("Image téléchargée avec succès : $downloadURL");
+        print("Bild heruntergeladen: $downloadURL");
       } catch (e) {
-        print("Erreur lors du téléchargement de l'image : $e");
+        print("$e");
       }
     }
+  }
+
+  Future<void> _showImageSourceActionSheet(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Aus Galerie wählen'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_camera),
+                title: Text('Mit Kamera aufnehmen'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -153,36 +171,35 @@ class _ItemFormPageState extends State<ItemFormPage> {
                           width: 300,
                           child: image == null
                               ? const Center(
-                              child: Text("kein Bild ausgewählt"))
+                                  child: Text("kein Bild ausgewählt"))
                               : ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.file(
-                              image!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.file(
+                                    image!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                         ),
                         ElevatedButton(
-                          onPressed: _pickImage,
+                          onPressed: () => _showImageSourceActionSheet(context),
                           child: Container(
                             decoration: const BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12)),
+                                  BorderRadius.all(Radius.circular(12)),
                               color: kPrimaryColor,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  child: Text(
-                                    itemImage.length > 20
-                                        ? itemImage.substring(0, 15) + '...'
-                                        : itemImage,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                Text(
+                                  itemImage.length > 20
+                                      ? itemImage.substring(0, 15) + '...'
+                                      : itemImage,
+                                  style: TextStyle(color: Colors.white),
                                 ),
                                 IconButton(
-                                  onPressed: _pickImage,
+                                  onPressed: () =>
+                                      _showImageSourceActionSheet(context),
                                   icon: const Icon(Icons.file_copy,
                                       color: Colors.white),
                                 ),
@@ -197,28 +214,29 @@ class _ItemFormPageState extends State<ItemFormPage> {
               ),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Nom de l\'item'),
+                decoration: InputDecoration(labelText: 'Name des item'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer le nom de l\'item';
+                    return 'Geben Sie bitte den Name des items';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _marqueController,
-                decoration: InputDecoration(labelText: 'Marque de l\'item'),
+                decoration: InputDecoration(labelText: 'Marque des item'),
               ),
               TextFormField(
                 controller: _beschreibungController,
-                decoration: InputDecoration(labelText: 'Description de l\'item'),
+                decoration: InputDecoration(labelText: 'Beschreibung des item'),
               ),
               TextFormField(
                 controller: _locationController,
-                decoration: InputDecoration(labelText: 'Lieu de trouvaille'),
+                decoration:
+                    InputDecoration(labelText: 'FundOrt des items eingeben'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer le lieu de trouvaille';
+                    return 'Bitte geben Sie hier wo Sie es gefunden haben';
                   }
                   return null;
                 },
@@ -226,16 +244,15 @@ class _ItemFormPageState extends State<ItemFormPage> {
               TextFormField(
                 controller: _dateController,
                 decoration: InputDecoration(
-                  labelText: 'Dat',
+                  labelText: 'Wann haben Sie es gefunden',
                   hintText: 'AAAA-MM-JJ',
                 ),
                 readOnly: true,
                 onTap: () => _selectDate(context),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer la date de trouvaille';
+                    return 'Bitte geben Sie ein gültiges Datum';
                   }
-
                   return null;
                 },
               ),
@@ -247,7 +264,7 @@ class _ItemFormPageState extends State<ItemFormPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _submitForm,
         child: const Icon(Icons.save),
-        tooltip: 'Enregistrer l\'item',
+        tooltip: 'Item speichern',
       ),
     );
   }

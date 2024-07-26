@@ -10,7 +10,6 @@ class AuthService {
   Stream<MyUser?> get user {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
-  // Création d'un objet User personnalisé à partir d'un utilisateur Firebase
 
   // einloggen mit einer Email und einem Password
   Future signInWithEmailAnPassword(String email, String password) async{
@@ -25,7 +24,7 @@ class AuthService {
 
   }
 
-  // ----------------------------------------register mit email und Password
+  // ----------------------------------------registern mit email und Password
   Future registerWithEmailAnPassword(String email, String password) async{
     try{
       UserCredential result= await _auth.createUserWithEmailAndPassword(email: email, password: password);
@@ -56,7 +55,7 @@ class AuthService {
   /////----------------------------------- -------------------------
 
 
-  // Méthode pour se connecter anonymement
+
   // Future<MyUser?> signInAnon() async {
   //   try {
   //     UserCredential result = await _auth.signInAnonymously();

@@ -128,7 +128,7 @@ class _SignupState extends State<Signup> {
                     child: IntlPhoneField(
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Phone Numer",
+                        hintText: "Phone Nummer",
                       ),
                       initialCountryCode: 'Togo',
                       onChanged: (phone) {
@@ -281,15 +281,15 @@ class _SignupState extends State<Signup> {
                             FirebaseFirestore.instance.collection('Users');
 
                             var user = {
-                              'usrId':uid,
+                              'usrId': uid,
                               'usrName': usrName.text,
                               'usrVorname': usrVorname.text,
                               'usrLand': _landCode.toString(),
                               'usrEmail': email.text,
                               'usrPhone': _phoneNumber.toString(),
                               'usrGenre': geschlecht.toString(),
-                              'usrPassword':usrPassword.text,
-                              'usrRole':0,
+                              'usrPassword': usrPassword.text,
+                              'usrRole': "user",
                             };
 
                             await collref.doc(uid).set(user);
@@ -304,6 +304,20 @@ class _SignupState extends State<Signup> {
                                   content: Text(
                                       'Neues Konto erfolgreich hergestellt ')),
                             );
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'email-already-in-use') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Diese E-Mail-Adresse wird bereits verwendet. Bitte verwenden Sie eine andere E-Mail-Adresse.')),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'Fehler bei der Erstellung des Kontos: ${e.message}')),
+                              );
+                            }
                           } catch (e) {
                             print("Fehler bei der Erstellung des Kontos: $e");
                             ScaffoldMessenger.of(context).showSnackBar(

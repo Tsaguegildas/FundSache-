@@ -8,7 +8,7 @@ class LostItems {
   String itemLocationFund;
   String itemDateFound;
   String finderId; // Verweisst dem User, der das Items gefunden oder verloren hat
-  String itemStatus;
+  String itemKategorie;
   String itemBild;
   DateTime creatAm = DateTime.now();
   bool statut = false;
@@ -21,7 +21,7 @@ class LostItems {
       required this.itemLocationFund,
       required this.itemDateFound,
       required this.finderId,
-      required this.itemStatus,
+      required this.itemKategorie,
       required this.itemBild,
       required this.creatAm});
 
@@ -34,7 +34,7 @@ class LostItems {
       'itemLocationFound': itemLocationFund,
       'itemDateFound': itemDateFound,
       'finderId': finderId,
-      'itemStatus': itemStatus,
+      'itemKategorie': itemKategorie,
       'creatAm': creatAm,
       'statut': statut,
       'itemBild' : itemBild,
@@ -44,7 +44,7 @@ class LostItems {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     return LostItems(
       itemName: data['itemName'] ?? 'Kein Name',
-      itemStatus: data['itemStatus'] ?? 'Kein Status',
+      itemKategorie: data['itemKategorie'] ?? 'Kein Status',
       itemDateFound: data['itemDateFound'] ?? 'Kein Datum',
       itemBild: data['itemBild'] ?? '',
       creatAm: DateTime.now(),
@@ -64,7 +64,7 @@ class LostItems {
       itemLocationFund: map['itemLocationFound'],
       itemDateFound: map['itemDateFound'],
       finderId: map['finderId'],
-      itemStatus: map['itemStatus'],
+      itemKategorie: map['itemKategorie'],
       itemBild: map ['itemBild'],
       creatAm: map['creatAm'],
     );

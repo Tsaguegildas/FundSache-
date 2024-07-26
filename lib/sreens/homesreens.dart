@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fundvgsache/konztante.dart';
 import 'package:fundvgsache/sreens/homeBody.dart';
+import 'package:fundvgsache/sreens/userProfile.dart';
 
 class Homescreen extends StatefulWidget {
   @override
@@ -15,6 +16,24 @@ class _HomescreenState extends State<Homescreen> {
     setState(() {
       selectIndex = index;
     });
+
+    switch (index) {
+      case 0:
+        Navigator.pop(context);
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Homescreen()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const UserProfile()),
+        );
+        break;
+    }
   }
 
   @override
@@ -25,7 +44,6 @@ class _HomescreenState extends State<Homescreen> {
         selectedIndex: selectIndex,
         selectedLabel: labels[selectIndex],
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -35,7 +53,6 @@ class _HomescreenState extends State<Homescreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

@@ -57,7 +57,7 @@ class ObjektCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    itemlos.itemStatus,
+                    itemlos.itemKategorie,
                     style: const TextStyle(
                       fontSize: 10,
                       color: Colors.red,

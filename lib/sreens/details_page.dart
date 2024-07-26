@@ -32,7 +32,7 @@ class _DetailsPageState extends State<DetailsPage> {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) =>  Homescreen()),
+          MaterialPageRoute(builder: (context) => Homescreen()),
         );
         break;
       case 2:
@@ -58,17 +58,17 @@ class _DetailsPageState extends State<DetailsPage> {
             children: [
               widget.lostItem.itemBild != null
                   ? Image.network(
-                widget.lostItem.itemBild!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              )
+                      widget.lostItem.itemBild!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
                   : const SizedBox.shrink(),
               const SizedBox(height: 16),
               Text(
                 widget.lostItem.itemName,
-                style: const TextStyle(
-                    fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
@@ -123,10 +123,10 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          widget.lostItem.itemStatus,
+                          widget.lostItem.itemKategorie,
                           style: TextStyle(
                             fontSize: 16,
-                            color: widget.lostItem.itemStatus == 'gefunden'
+                            color: widget.lostItem.itemKategorie == 'gefunden'
                                 ? Colors.green
                                 : Colors.red,
                             fontWeight: FontWeight.bold,
@@ -142,7 +142,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  Messagepage(),
+                          builder: (context) => Messagepage(),
                         ),
                       );
                     },
